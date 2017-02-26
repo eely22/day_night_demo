@@ -27,6 +27,15 @@
     <script src="js/particle.min.js"></script>
     <script>
         $(document).ready(function () {
+            $("#saveButton").click(function() {
+                if (typeof(Storage) !== "undefined") {
+                    // Code for localStorage/sessionStorage.
+                    localStorage.setItem("accessToken", $("#tokenInput").val());
+                    localStorage.setItem("device", $("#deviceInput").val());
+                }
+                location.reload();
+            });
+
             $("#dialog").hide();
             if (typeof(Storage) !== "undefined") {
                 // Code for localStorage/sessionStorage.
@@ -57,8 +66,12 @@
 <body>
     <img class="day" width="100%" src="img/day_scene.png">
     <img class="night" width="100%" src="img/night_scene.png">
-    <div id="dialog" title="Warning...">
+    <div id="dialog" title="Device Info..." width="400px">
         <p>You must enter 'device' and 'accessToken' into local storage for the demo to work.</p>
+        <p>Device can be 'mine' for all your devices</p>
+        Device: <input type="text" name="device" id="deviceInput"><br>
+        Token:  <input type="text" name="accessToken" id="tokenInput"><br>
+        <button id="saveButton">Save</button>
     </div>
 </body>
 </html>
