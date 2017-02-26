@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bluz Photoresistor Demo</title>
+    <link rel="shortcut icon" href="img/bluz_only_logo.png">
+
+    <style>
+        .day {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 1;
+        }
+
+        .night {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+    </style>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="js/particle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#dialog").hide();
+            if (typeof(Storage) !== "undefined") {
+                // Code for localStorage/sessionStorage.
+                var accessToken = localStorage.getItem("accessToken");
+                var device = localStorage.getItem("device");
+            }
+
+            if (!accessToken || !device) {
+                $( "#dialog" ).dialog();
+            } else {
+                var particle = new Particle();
+                var lastValue = 1;
+                particle.getEventStream({deviceId: device, auth: accessToken}).then(function (stream) {
+                    stream.on('Photo_Resistor', function (data) {
+                        if (Number(data.data) !== lastValue) {
+                            $('.day').fadeTo(300, Number(data.data / 100));
+                            lastValue = Number(data.data);
+                        }
+                    });
+                });
+            }
+
+        });
+    </script>
+
+
+</head>
+<body>
+    <img class="day" width="100%" src="img/day_scene.png">
+    <img class="night" width="100%" src="img/night_scene.png">
+    <div id="dialog" title="Warning...">
+        <p>You must enter 'device' and 'accessToken' into local storage for the demo to work.</p>
+    </div>
+</body>
+</html>
